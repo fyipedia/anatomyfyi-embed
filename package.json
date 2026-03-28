@@ -1,6 +1,6 @@
 {
   "name": "anatomyfyi-embed",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Embed AnatomyFYI widgets — anatomical structures, body systems, glossary terms. 14,692 structures. Zero dependencies, Shadow DOM, 4 themes. Medical disclaimer included.",
   "main": "dist/embed.min.js",
   "module": "dist/embed.esm.js",

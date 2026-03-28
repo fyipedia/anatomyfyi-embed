@@ -1,32 +1,888 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AnatomyFYI Embed Widget — Structures Widgets for Any Website</title>
-  <meta name="description" content="Embed AnatomyFYI structures widgets on any website. Zero dependencies, Shadow DOM isolation. Medical disclaimer included.">
+  <meta name="description" content="Embed AnatomyFYI Structures widgets on any website. Zero dependencies, Shadow DOM, 4 themes, 2 styles. Free CDN via jsDelivr.">
+  <meta name="theme-color" content="#E11D48">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="AnatomyFYI Embed Widget — Structures for Any Website">
+  <meta property="og:description" content="Add AnatomyFYI health &amp; medical widgets, glossary terms, interactive tools, and inline elements to any website in one line of HTML.">
+  <meta property="og:url" content="https://widget.anatomyfyi.com">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://anatomyfyi.com/static/og/homepage.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:site_name" content="AnatomyFYI">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="AnatomyFYI Embed Widget">
+  <meta name="twitter:description" content="Add AnatomyFYI Structures widgets to any website in one line of HTML. Zero dependencies, Shadow DOM.">
+  <meta name="twitter:image" content="https://anatomyfyi.com/static/og/homepage.png">
+
+  <!-- Canonical + SEO -->
+  <link rel="canonical" href="https://widget.anatomyfyi.com">
+  <meta name="author" content="FYIPedia">
+  <meta name="robots" content="index, follow">
+
+  <!-- Favicon -->
+  <link rel="icon" href="https://anatomyfyi.com/static/favicon.ico" sizes="32x32">
+  <link rel="icon" href="https://anatomyfyi.com/static/icon.svg" type="image/svg+xml">
+
+  <!-- Preconnect -->
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link rel="dns-prefetch" href="https://anatomyfyi.com">
+
+  <!-- JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"AnatomyFYI Embed Widget","url":"https://widget.anatomyfyi.com","applicationCategory":"DeveloperApplication","operatingSystem":"Web","description":"Embed AnatomyFYI Structures widgets on any website. Zero dependencies, Shadow DOM isolation, 4 themes.","publisher":{"@type":"Organization","name":"FYIPedia","url":"https://fyipedia.com"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"AnatomyFYI","item":"https://anatomyfyi.com"},{"@type":"ListItem","position":2,"name":"Widget Docs"}]},{"@type":"SoftwareSourceCode","name":"anatomyfyi-embed","codeRepository":"https://github.com/fyipedia/anatomyfyi-embed","programmingLanguage":"TypeScript","runtimePlatform":"Browser","license":"https://opensource.org/licenses/MIT"}]}
+  </script>
+
+  <!-- JetBrains Mono for code blocks -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: { accent: '#E11D48' },
+          fontFamily: {
+            mono: ['"JetBrains Mono"', '"Fira Code"', 'ui-monospace', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Dark mode FOUC prevention -->
+  <script>
+    (function(){
+      var t = localStorage.getItem('theme');
+      if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+      }
+    })();
+  </script>
+
+  <!-- Alpine.js CDN -->
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.9/dist/cdn.min.js"></script>
+
+  <!-- Embed script via jsDelivr -->
+  <script src="https://cdn.jsdelivr.net/npm/anatomyfyi-embed@1/dist/embed.min.js"></script>
+
   <style>
-    body { font-family: system-ui, -apple-system, sans-serif; max-width: 800px; margin: 0 auto; padding: 2rem; color: #1a1a1a; }
-    h1 { color: #E11D48; }
-    pre { background: #f5f5f5; padding: 1rem; border-radius: 8px; overflow-x: auto; }
-    .badge { display: inline-block; background: #E11D48; color: white; padding: 0.25rem 0.75rem; border-radius: 999px; font-size: 0.875rem; text-decoration: none; margin-right: 0.5rem; }
-    .disclaimer { font-size: 0.75rem; color: #64748b; font-style: italic; margin-top: 2rem; padding: 1rem; background: #f8fafc; border-radius: 8px; }
+    [x-cloak]{display:none!important}
+    :root{--accent:#E11D48} .accent-text{color:var(--accent)} .accent-bg{background-color:var(--accent)} .accent-border{border-color:var(--accent)}
+    pre{tab-size:2;margin:0}
+    .code-block-wrapper{position:relative;margin-bottom:1rem}
+    .code-lang-badge{position:absolute;top:0;left:12px;transform:translateY(-50%);background:#1e293b;color:#94a3b8;font-family:'JetBrains Mono','Fira Code',monospace;font-size:10px;font-weight:600;padding:2px 8px;border-radius:4px;text-transform:uppercase;letter-spacing:.05em;z-index:1}
+    .code-copy-btn{position:absolute;top:8px;right:8px;background:#334155;color:#94a3b8;border:none;padding:4px 10px;border-radius:4px;font-size:11px;font-family:'JetBrains Mono','Fira Code',monospace;cursor:pointer;transition:background .15s;z-index:1}
+    .code-copy-btn:hover{background:#475569}
+    .code-block{background:#0f172a;color:#e2e8f0;border-radius:8px;padding:1.25rem 1.25rem 1rem;font-size:13px;line-height:1.7;overflow-x:auto;font-family:'JetBrains Mono','Fira Code',ui-monospace,monospace;-webkit-font-smoothing:antialiased}
+    .hl-tag{color:#7dd3fc} .hl-attr{color:#86efac} .hl-val{color:#fde68a} .hl-comment{color:#475569;font-style:italic} .hl-str{color:#fda4af} .hl-kw{color:#c4b5fd} .hl-num{color:#fdba74} .hl-fn{color:#67e8f9} .hl-punct{color:#94a3b8}
+    .mock-card{border-radius:8px;overflow:hidden;font-size:11px;line-height:1.5}
+    .mock-card .mc-foot{font-size:9px;color:#9ca3af;border-top:1px solid #f3f4f6;padding-top:6px;margin-top:8px}
+    .dark .mock-card .mc-foot{border-color:#374151;color:#6b7280}
+    .mock-card .mc-foot a{font-size:9px}
+    .ws-btn{padding:6px 14px;border-radius:9999px;font-size:12px;font-weight:500;border:1px solid #e2e8f0;background:#fff;color:#64748b;cursor:pointer;transition:all .15s;font-family:'JetBrains Mono','Fira Code',monospace}
+    .ws-btn:hover{border-color:#cbd5e1;color:#334155}
+    .ws-btn.active{background:#E11D48;color:#fff;border-color:#E11D48}
+    .dark .ws-btn{background:#1e293b;border-color:#334151;color:#94a3b8}
+    .dark .ws-btn:hover{border-color:#4b5563;color:#e2e8f0}
+    .dark .ws-btn.active{background:#E11D48;color:#fff;border-color:#E11D48}
+    .health-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;font-family:'JetBrains Mono',monospace}
+    .disclaimer-box{background:#fef9c3;border:1px solid #fef08a;border-radius:8px;padding:12px 16px;font-size:12px;color:#854d0e}
+    .dark .disclaimer-box{background:#1c1917;border-color:#292524;color:#a8a29e}
   </style>
 </head>
-<body>
-  <h1>AnatomyFYI Embed Widget</h1>
-  <p>
-    <a class="badge" href="https://www.npmjs.com/package/anatomyfyi-embed">npm</a>
-    <a class="badge" href="https://github.com/fyipedia/anatomyfyi-embed">GitHub</a>
-    <a class="badge" href="https://anatomyfyi.com">Visit AnatomyFYI</a>
-  </p>
-  <p>Embed AnatomyFYI structures widgets on any website. Zero dependencies, Shadow DOM style isolation, 4 themes, 2 styles.</p>
-  <h2>Quick Start</h2>
-  <pre><code>&lt;div data-anatomyfyi="entity" data-slug="structures" data-theme="light"&gt;&lt;/div&gt;
-&lt;script src="https://cdn.jsdelivr.net/npm/anatomyfyi-embed@1/dist/embed.min.js"&gt;&lt;/script&gt;</code></pre>
-  <div class="disclaimer">
-    ⚕️ <strong>Medical Disclaimer</strong>: All Health FYI widgets include an educational disclaimer. This information is for educational purposes only and should not replace professional medical advice.
+<body class="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 antialiased" x-data="{ darkMode: document.documentElement.classList.contains('dark') }">
+
+<!-- ═══════════════════════════════════════════════════════════
+     HEADER
+═══════════════════════════════════════════════════════════ -->
+<header class="sticky top-0 z-50 border-b border-gray-200 dark:border-gray-800 bg-white/90 dark:bg-gray-950/90 backdrop-blur-md">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
+    <div class="flex items-center gap-2 min-w-0">
+      <!-- Heart/medical icon -->
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" class="flex-shrink-0" style="color:#E11D48">
+        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span class="font-semibold text-sm">AnatomyFYI Widget</span>
+      <span class="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-xs font-mono bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400">v1.0</span>
+    </div>
+    <nav class="hidden md:flex items-center gap-5 text-sm text-gray-500 dark:text-gray-400">
+      <a href="#quick-start" class="hover:text-gray-900 dark:hover:text-gray-100 transition-colors">Quick Start</a>
+      <a href="#gallery" class="hover:text-gray-900 dark:hover:text-gray-100 transition-colors">Gallery</a>
+      <a href="#options" class="hover:text-gray-900 dark:hover:text-gray-100 transition-colors">Options</a>
+      <a href="#cdn" class="hover:text-gray-900 dark:hover:text-gray-100 transition-colors">CDN</a>
+    </nav>
+    <div class="flex items-center gap-2 flex-shrink-0">
+      <button @click="darkMode=!darkMode; document.documentElement.classList.toggle('dark'); localStorage.setItem('theme', darkMode?'dark':'light')" class="p-2 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" title="Toggle dark mode">
+        <svg x-show="!darkMode" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        <svg x-show="darkMode" x-cloak width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+      <a href="https://anatomyfyi.com" target="_blank" rel="noopener" class="hidden sm:inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-colors">
+        Visit AnatomyFYI
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      </a>
+    </div>
   </div>
-  <script src="https://cdn.jsdelivr.net/npm/anatomyfyi-embed@1/dist/embed.min.js"></script>
+</header>
+
+<!-- ═══════════════════════════════════════════════════════════
+     HERO
+═══════════════════════════════════════════════════════════ -->
+<section class="max-w-6xl mx-auto px-4 sm:px-6 py-16 md:py-24">
+  <div class="grid md:grid-cols-2 gap-12 items-center">
+    <div>
+      <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium mb-5 border" style="border-color:#E11D4833;background:#E11D4811;color:#E11D48">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        Health FYI Embed · Zero Dependencies
+      </div>
+      <h1 class="text-4xl md:text-5xl font-bold tracking-tight leading-tight mb-5">
+        Embed <span style="color:#E11D48">AnatomyFYI</span> widgets anywhere
+      </h1>
+      <p class="text-lg text-gray-500 dark:text-gray-400 mb-8 leading-relaxed">
+        Add AnatomyFYI Structures cards, medical glossary terms, drug guides, interactive health calculators, and inline badges to any website — one script tag.
+      </p>
+      <div class="flex flex-wrap gap-3">
+        <a href="#quick-start" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold text-white transition-opacity hover:opacity-90" style="background:#E11D48">
+          Get Started
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+        <a href="https://github.com/fyipedia/anatomyfyi-embed" target="_blank" rel="noopener" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-colors">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2z"/></svg>
+          GitHub
+        </a>
+        <a href="https://www.npmjs.com/package/anatomyfyi-embed" target="_blank" rel="noopener" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-colors">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M0 0v24h24V0H0zm6.672 19.166H3.834V4.834h9.332v14.332H9.5v-11.5H6.672v11.5zm14.494 0h-2.838v-2.836h-2.828v2.836h-2.838V4.834h8.504v14.332z"/></svg>
+          npm
+        </a>
+      </div>
+      <div class="flex flex-wrap gap-4 mt-6 text-xs text-gray-400 dark:text-gray-500">
+        <span class="flex items-center gap-1.5">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          Zero dependencies
+        </span>
+        <span class="flex items-center gap-1.5">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          Shadow DOM isolation
+        </span>
+        <span class="flex items-center gap-1.5">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          Medical disclaimer included
+        </span>
+        <span class="flex items-center gap-1.5">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          4 themes · 2 styles
+        </span>
+      </div>
+    </div>
+
+    <!-- Mock widget preview -->
+    <div class="relative">
+      <div class="mock-card bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-xl p-4">
+        <div class="flex items-start gap-3 mb-3">
+          <div class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style="background:#E11D4822">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E11D48" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 mb-0.5">
+              <span class="font-semibold text-sm text-gray-900 dark:text-gray-100">Sample Structures</span>
+              <span class="health-badge text-white text-xs" style="background:#E11D48">Medical</span>
+            </div>
+            <p class="text-xs text-gray-500 dark:text-gray-400 line-clamp-2">Evidence-based health information with clinical references and safety data.</p>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-2 mb-3">
+          <div class="bg-gray-50 dark:bg-gray-800 rounded p-2">
+            <div class="text-xs text-gray-400 mb-0.5">Category</div>
+            <div class="text-xs font-medium text-gray-700 dark:text-gray-300">General Health</div>
+          </div>
+          <div class="bg-gray-50 dark:bg-gray-800 rounded p-2">
+            <div class="text-xs text-gray-400 mb-0.5">Source</div>
+            <div class="text-xs font-medium text-gray-700 dark:text-gray-300">PubMed Verified</div>
+          </div>
+        </div>
+        <div class="disclaimer-box text-xs mb-3">
+          ⚕️ For educational purposes only. Consult a healthcare provider.
+        </div>
+        <div class="mc-foot flex items-center justify-between">
+          <span>Educational use only · bodyfyi.com</span>
+          <a href="https://anatomyfyi.com" target="_blank" style="color:#E11D48" class="hover:underline">View on AnatomyFYI ↗</a>
+        </div>
+      </div>
+      <!-- Floating badges -->
+      <div class="absolute -top-3 -right-3 px-2.5 py-1 rounded-full text-xs font-mono font-semibold text-white shadow-lg" style="background:#E11D48">Structures</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     QUICK START
+═══════════════════════════════════════════════════════════ -->
+<section id="quick-start" class="border-t border-gray-100 dark:border-gray-800 py-16">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    <div class="text-center mb-10">
+      <h2 class="text-3xl font-bold mb-3">Quick Start</h2>
+      <p class="text-gray-500 dark:text-gray-400">One script tag. Structures embedded in 30 seconds.</p>
+    </div>
+    <div class="grid md:grid-cols-3 gap-6 mb-10">
+      <div class="p-5 rounded-xl border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900">
+        <div class="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold text-white mb-3" style="background:#E11D48">1</div>
+        <h3 class="font-semibold mb-1.5">Add the script</h3>
+        <p class="text-sm text-gray-500 dark:text-gray-400">Include the embed script from jsDelivr CDN anywhere in your HTML.</p>
+      </div>
+      <div class="p-5 rounded-xl border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900">
+        <div class="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold text-white mb-3" style="background:#E11D48">2</div>
+        <h3 class="font-semibold mb-1.5">Place the element</h3>
+        <p class="text-sm text-gray-500 dark:text-gray-400">Add a div with the <code class="font-mono text-xs px-1 py-0.5 bg-gray-200 dark:bg-gray-700 rounded">data-anatomyfyi</code> attribute.</p>
+      </div>
+      <div class="p-5 rounded-xl border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900">
+        <div class="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold text-white mb-3" style="background:#E11D48">3</div>
+        <h3 class="font-semibold mb-1.5">Done</h3>
+        <p class="text-sm text-gray-500 dark:text-gray-400">The widget renders automatically — fully isolated by Shadow DOM, disclaimer included.</p>
+      </div>
+    </div>
+
+    <div class="max-w-3xl mx-auto">
+      <div class="code-block-wrapper pt-4">
+        <span class="code-lang-badge">HTML</span>
+        <button class="code-copy-btn" onclick="(function(b){var t=document.getElementById('qs-code').textContent;navigator.clipboard.writeText(t).then(function(){b.textContent='Copied!';setTimeout(function(){b.textContent='Copy'},1500)})})(this)">Copy</button>
+        <pre class="code-block"><code><span class="hl-comment">&lt;!-- Step 1: Add embed script --&gt;</span>
+<span class="hl-tag">&lt;script</span> <span class="hl-attr">src</span>=<span class="hl-val">"https://cdn.jsdelivr.net/npm/anatomyfyi-embed@1/dist/embed.min.js"</span><span class="hl-tag">&gt;&lt;/script&gt;</span>
+
+<span class="hl-comment">&lt;!-- Step 2: Place the widget --&gt;</span>
+<span class="hl-tag">&lt;div</span> <span class="hl-attr">data-anatomyfyi</span>=<span class="hl-val">"entity"</span>
+     <span class="hl-attr">data-slug</span>=<span class="hl-val">"example-structures"</span>
+     <span class="hl-attr">data-style</span>=<span class="hl-val">"modern"</span>
+     <span class="hl-attr">data-theme</span>=<span class="hl-val">"auto"</span><span class="hl-tag">&gt;&lt;/div&gt;</span></code></pre>
+      </div>
+      <script type="text/plain" id="qs-code">&lt;script src="https://cdn.jsdelivr.net/npm/anatomyfyi-embed@1/dist/embed.min.js"&gt;&lt;/script&gt;
+
+&lt;div data-anatomyfyi="entity"
+     data-slug="example-structures"
+     data-style="modern"
+     data-theme="auto"&gt;&lt;/div&gt;</script>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     WIDGET GALLERY
+═══════════════════════════════════════════════════════════ -->
+<section id="gallery" class="border-t border-gray-100 dark:border-gray-800 py-16 bg-gray-50 dark:bg-gray-900/50">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6" x-data="{ activeWidget: 'entity', activeStyle: 'modern' }">
+    <div class="text-center mb-10">
+      <h2 class="text-3xl font-bold mb-3">Widget Gallery</h2>
+      <p class="text-gray-500 dark:text-gray-400">7 widget types × 2 styles × 4 themes</p>
+    </div>
+
+    <!-- Widget type selector -->
+    <div class="flex flex-wrap gap-2 justify-center mb-6">
+      <button @click="activeWidget='entity'" :class="activeWidget==='entity' ? 'active' : ''" class="ws-btn">Entity</button>
+      <button @click="activeWidget='glossary'" :class="activeWidget==='glossary' ? 'active' : ''" class="ws-btn">Glossary</button>
+      <button @click="activeWidget='guide'" :class="activeWidget==='guide' ? 'active' : ''" class="ws-btn">Guide</button>
+      <button @click="activeWidget='search'" :class="activeWidget==='search' ? 'active' : ''" class="ws-btn">Search</button>
+      <button @click="activeWidget='compare'" :class="activeWidget==='compare' ? 'active' : ''" class="ws-btn">Compare</button>
+      <button @click="activeWidget='faq'" :class="activeWidget==='faq' ? 'active' : ''" class="ws-btn">FAQ</button>
+      <button @click="activeWidget='inline'" :class="activeWidget==='inline' ? 'active' : ''" class="ws-btn">Inline</button>
+    </div>
+
+    <!-- Style selector -->
+    <div class="flex gap-2 justify-center mb-8">
+      <button @click="activeStyle='modern'" :class="activeStyle==='modern' ? 'active' : ''" class="ws-btn">Clinical</button>
+      <button @click="activeStyle='clean'" :class="activeStyle==='clean' ? 'active' : ''" class="ws-btn">Modern</button>
+    </div>
+
+    <!-- Gallery panels: light + dark side by side -->
+    <div class="grid md:grid-cols-2 gap-6">
+      <!-- Light preview -->
+      <div class="rounded-xl border border-gray-200 overflow-hidden">
+        <div class="px-4 py-2 bg-white border-b border-gray-100 text-xs font-mono text-gray-400 flex items-center justify-between">
+          <span>Light theme</span>
+          <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-yellow-400 inline-block"></span> Preview</span>
+        </div>
+        <div class="p-5 bg-white">
+          <!-- Entity widget mock (light) -->
+          <div x-show="activeWidget==='entity'" class="mock-card border border-gray-100 p-4">
+            <div class="flex items-center gap-2 mb-2">
+              <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style="background:#E11D4822">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#E11D48" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              </div>
+              <div><p class="font-semibold text-xs text-gray-900">Sample Health Record</p><p class="text-xs text-gray-400">Health · AnatomyFYI</p></div>
+            </div>
+            <p class="text-xs text-gray-600 mb-2">Evidence-based information about this health topic, verified with clinical references.</p>
+            <div class="grid grid-cols-2 gap-1.5 mb-3">
+              <div class="bg-gray-50 rounded p-1.5"><p class="text-xs text-gray-400">Category</p><p class="text-xs font-medium">General</p></div>
+              <div class="bg-gray-50 rounded p-1.5"><p class="text-xs text-gray-400">Source</p><p class="text-xs font-medium">PubMed</p></div>
+            </div>
+            <div class="disclaimer-box text-xs mb-2">⚕️ Educational purposes only. Consult a healthcare provider.</div>
+            <div class="mc-foot flex justify-between"><span>bodyfyi.com</span><a href="#" style="color:#E11D48">View ↗</a></div>
+          </div>
+          <!-- Glossary widget mock (light) -->
+          <div x-show="activeWidget==='glossary'" x-cloak class="mock-card border border-gray-100 p-4">
+            <div class="text-xs font-semibold text-gray-700 mb-1">Medical Term</div>
+            <p class="text-xs text-gray-600 mb-2 leading-relaxed">A standardized medical term with clinical definition and related conditions or uses.</p>
+            <div class="flex flex-wrap gap-1 mb-2"><span class="px-1.5 py-0.5 rounded text-xs bg-gray-100 text-gray-600">anatomy</span><span class="px-1.5 py-0.5 rounded text-xs bg-gray-100 text-gray-600">pathology</span></div>
+            <div class="disclaimer-box text-xs mb-2">⚕️ Educational purposes only.</div>
+            <div class="mc-foot flex justify-between"><span>Medical Glossary</span><a href="#" style="color:#E11D48">Definition ↗</a></div>
+          </div>
+          <!-- Guide widget mock (light) -->
+          <div x-show="activeWidget==='guide'" x-cloak class="mock-card border border-gray-100 p-4">
+            <div class="text-xs font-bold text-gray-800 mb-1">Health Guide</div>
+            <p class="text-xs text-gray-600 mb-2">Step-by-step clinical guide with evidence levels and practice recommendations.</p>
+            <div class="space-y-1.5 mb-3">
+              <div class="flex items-center gap-2"><span class="w-4 h-4 rounded-full flex items-center justify-center text-white text-xs flex-shrink-0" style="background:#E11D48">1</span><span class="text-xs text-gray-600">Assess patient condition</span></div>
+              <div class="flex items-center gap-2"><span class="w-4 h-4 rounded-full flex items-center justify-center text-white text-xs flex-shrink-0" style="background:#E11D48">2</span><span class="text-xs text-gray-600">Review clinical guidelines</span></div>
+              <div class="flex items-center gap-2"><span class="w-4 h-4 rounded-full flex items-center justify-center text-white text-xs flex-shrink-0" style="background:#E11D48">3</span><span class="text-xs text-gray-600">Apply evidence-based protocol</span></div>
+            </div>
+            <div class="mc-foot flex justify-between"><span>Clinical Guide</span><a href="#" style="color:#E11D48">Read more ↗</a></div>
+          </div>
+          <!-- Search widget mock (light) -->
+          <div x-show="activeWidget==='search'" x-cloak class="mock-card border border-gray-100 p-4">
+            <div class="flex items-center gap-2 bg-gray-50 rounded-lg p-2 mb-3">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              <span class="text-xs text-gray-400">Search Structures…</span>
+            </div>
+            <div class="space-y-1.5">
+              <div class="flex items-center gap-2 rounded-lg px-2 py-1.5 bg-gray-50"><span class="text-xs font-medium text-gray-700">Sample Result 1</span></div>
+              <div class="flex items-center gap-2 rounded-lg px-2 py-1.5"><span class="text-xs text-gray-600">Sample Result 2</span></div>
+              <div class="flex items-center gap-2 rounded-lg px-2 py-1.5"><span class="text-xs text-gray-600">Sample Result 3</span></div>
+            </div>
+            <div class="mc-foot">Powered by AnatomyFYI</div>
+          </div>
+          <!-- Compare widget mock (light) -->
+          <div x-show="activeWidget==='compare'" x-cloak class="mock-card border border-gray-100 p-4">
+            <div class="text-xs font-semibold text-gray-700 mb-2">Compare Structures</div>
+            <div class="grid grid-cols-2 gap-2 text-xs mb-3">
+              <div class="rounded-lg p-2 bg-gray-50"><p class="font-semibold text-gray-800 mb-1">Option A</p><p class="text-gray-500">Category: Type I</p><p class="text-gray-500">Risk: Low</p></div>
+              <div class="rounded-lg p-2 bg-gray-50"><p class="font-semibold text-gray-800 mb-1">Option B</p><p class="text-gray-500">Category: Type II</p><p class="text-gray-500">Risk: Moderate</p></div>
+            </div>
+            <div class="mc-foot">Comparison powered by AnatomyFYI</div>
+          </div>
+          <!-- FAQ widget mock (light) -->
+          <div x-show="activeWidget==='faq'" x-cloak class="mock-card border border-gray-100 p-4">
+            <div class="text-xs font-semibold text-gray-700 mb-2">Frequently Asked Questions</div>
+            <div class="space-y-2">
+              <div class="rounded-lg bg-gray-50 p-2"><p class="text-xs font-medium text-gray-800 mb-1">What does this health metric mean?</p><p class="text-xs text-gray-500">This metric indicates general wellness based on clinical standards and population data.</p></div>
+              <div class="rounded-lg bg-gray-50 p-2"><p class="text-xs font-medium text-gray-800 mb-1">When should I see a doctor?</p><p class="text-xs text-gray-500">Consult a healthcare professional for any symptoms or concerns about your health.</p></div>
+            </div>
+            <div class="mc-foot">FAQ · AnatomyFYI</div>
+          </div>
+          <!-- Inline widget mock (light) -->
+          <div x-show="activeWidget==='inline'" x-cloak class="mock-card border border-gray-100 p-4">
+            <p class="text-xs text-gray-600 mb-3 leading-relaxed">
+              The body maintains homeostasis through various mechanisms.
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded font-mono text-xs font-semibold text-white" style="background:#E11D48">System</span>
+              refers to an organized collection of organs working together.
+            </p>
+            <div class="flex flex-wrap gap-1.5">
+              <span class="health-badge text-white text-xs" style="background:#E11D48">System Badge</span>
+              <span class="health-badge text-xs border" style="border-color:#E11D48;color:#E11D48">Dosage</span>
+              <span class="health-badge text-white text-xs" style="background:#2DD4BF">Formula</span>
+              <span class="health-badge text-white text-xs" style="background:#22C55E">Macro</span>
+            </div>
+            <div class="mc-foot mt-3">Inline elements · Health FYI</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dark preview -->
+      <div class="rounded-xl border border-gray-700 overflow-hidden">
+        <div class="px-4 py-2 bg-gray-900 border-b border-gray-700 text-xs font-mono text-gray-500 flex items-center justify-between">
+          <span>Dark theme</span>
+          <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-green-400 inline-block"></span> Preview</span>
+        </div>
+        <div class="p-5 bg-gray-900">
+          <!-- Entity (dark) -->
+          <div x-show="activeWidget==='entity'" class="mock-card border border-gray-700 p-4">
+            <div class="flex items-center gap-2 mb-2">
+              <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style="background:#E11D4833">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#E11D48" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              </div>
+              <div><p class="font-semibold text-xs text-gray-100">Sample Health Record</p><p class="text-xs text-gray-500">Health · AnatomyFYI</p></div>
+            </div>
+            <p class="text-xs text-gray-400 mb-2">Evidence-based information about this health topic, verified with clinical references.</p>
+            <div class="grid grid-cols-2 gap-1.5 mb-3">
+              <div class="bg-gray-800 rounded p-1.5"><p class="text-xs text-gray-500">Category</p><p class="text-xs font-medium text-gray-200">General</p></div>
+              <div class="bg-gray-800 rounded p-1.5"><p class="text-xs text-gray-500">Source</p><p class="text-xs font-medium text-gray-200">PubMed</p></div>
+            </div>
+            <div class="bg-gray-800 border border-gray-700 rounded-lg p-2 text-xs text-gray-400 mb-2">⚕️ Educational purposes only. Consult a healthcare provider.</div>
+            <div class="mc-foot flex justify-between"><span>bodyfyi.com</span><a href="#" style="color:#E11D48">View ↗</a></div>
+          </div>
+          <!-- Glossary (dark) -->
+          <div x-show="activeWidget==='glossary'" x-cloak class="mock-card border border-gray-700 p-4">
+            <div class="text-xs font-semibold text-gray-200 mb-1">Medical Term</div>
+            <p class="text-xs text-gray-400 mb-2 leading-relaxed">A standardized medical term with clinical definition.</p>
+            <div class="flex flex-wrap gap-1 mb-2"><span class="px-1.5 py-0.5 rounded text-xs bg-gray-800 text-gray-400">anatomy</span><span class="px-1.5 py-0.5 rounded text-xs bg-gray-800 text-gray-400">pathology</span></div>
+            <div class="bg-gray-800 border border-gray-700 rounded-lg p-2 text-xs text-gray-400 mb-2">⚕️ Educational purposes only.</div>
+            <div class="mc-foot flex justify-between"><span>Medical Glossary</span><a href="#" style="color:#E11D48">Definition ↗</a></div>
+          </div>
+          <!-- Guide (dark) -->
+          <div x-show="activeWidget==='guide'" x-cloak class="mock-card border border-gray-700 p-4">
+            <div class="text-xs font-bold text-gray-200 mb-1">Health Guide</div>
+            <p class="text-xs text-gray-400 mb-2">Step-by-step clinical guide with evidence levels.</p>
+            <div class="space-y-1.5 mb-3">
+              <div class="flex items-center gap-2"><span class="w-4 h-4 rounded-full flex items-center justify-center text-white text-xs flex-shrink-0" style="background:#E11D48">1</span><span class="text-xs text-gray-400">Assess patient condition</span></div>
+              <div class="flex items-center gap-2"><span class="w-4 h-4 rounded-full flex items-center justify-center text-white text-xs flex-shrink-0" style="background:#E11D48">2</span><span class="text-xs text-gray-400">Review clinical guidelines</span></div>
+            </div>
+            <div class="mc-foot flex justify-between"><span>Clinical Guide</span><a href="#" style="color:#E11D48">Read more ↗</a></div>
+          </div>
+          <!-- Search (dark) -->
+          <div x-show="activeWidget==='search'" x-cloak class="mock-card border border-gray-700 p-4">
+            <div class="flex items-center gap-2 bg-gray-800 rounded-lg p-2 mb-3">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              <span class="text-xs text-gray-500">Search Structures…</span>
+            </div>
+            <div class="space-y-1.5">
+              <div class="rounded-lg px-2 py-1.5 bg-gray-800"><span class="text-xs font-medium text-gray-200">Sample Result 1</span></div>
+              <div class="rounded-lg px-2 py-1.5"><span class="text-xs text-gray-400">Sample Result 2</span></div>
+            </div>
+            <div class="mc-foot">Powered by AnatomyFYI</div>
+          </div>
+          <!-- Compare (dark) -->
+          <div x-show="activeWidget==='compare'" x-cloak class="mock-card border border-gray-700 p-4">
+            <div class="text-xs font-semibold text-gray-200 mb-2">Compare Structures</div>
+            <div class="grid grid-cols-2 gap-2 text-xs mb-3">
+              <div class="rounded-lg p-2 bg-gray-800"><p class="font-semibold text-gray-200 mb-1">Option A</p><p class="text-gray-500">Type I · Low</p></div>
+              <div class="rounded-lg p-2 bg-gray-800"><p class="font-semibold text-gray-200 mb-1">Option B</p><p class="text-gray-500">Type II · Moderate</p></div>
+            </div>
+            <div class="mc-foot">Comparison powered by AnatomyFYI</div>
+          </div>
+          <!-- FAQ (dark) -->
+          <div x-show="activeWidget==='faq'" x-cloak class="mock-card border border-gray-700 p-4">
+            <div class="text-xs font-semibold text-gray-200 mb-2">Frequently Asked Questions</div>
+            <div class="space-y-2">
+              <div class="rounded-lg bg-gray-800 p-2"><p class="text-xs font-medium text-gray-200 mb-1">What does this health metric mean?</p><p class="text-xs text-gray-500">This metric indicates general wellness.</p></div>
+              <div class="rounded-lg bg-gray-800 p-2"><p class="text-xs font-medium text-gray-200 mb-1">When should I see a doctor?</p><p class="text-xs text-gray-500">Consult a healthcare professional for concerns.</p></div>
+            </div>
+            <div class="mc-foot">FAQ · AnatomyFYI</div>
+          </div>
+          <!-- Inline (dark) -->
+          <div x-show="activeWidget==='inline'" x-cloak class="mock-card border border-gray-700 p-4">
+            <p class="text-xs text-gray-400 mb-3 leading-relaxed">
+              The body maintains homeostasis through various mechanisms.
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded font-mono text-xs font-semibold text-white" style="background:#E11D48">System</span>
+              refers to an organized collection of organs.
+            </p>
+            <div class="flex flex-wrap gap-1.5">
+              <span class="health-badge text-white text-xs" style="background:#E11D48">System Badge</span>
+              <span class="health-badge text-xs border" style="border-color:#E11D48;color:#E11D48">Dosage</span>
+              <span class="health-badge text-white text-xs" style="background:#2DD4BF">Formula</span>
+              <span class="health-badge text-white text-xs" style="background:#22C55E">Macro</span>
+            </div>
+            <div class="mc-foot mt-3">Inline elements · Health FYI</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Code snippet for active widget -->
+    <div class="mt-6 max-w-3xl mx-auto">
+      <div x-show="activeWidget==='entity'" class="code-block-wrapper pt-4">
+        <span class="code-lang-badge">HTML</span>
+        <button class="code-copy-btn" onclick="(function(b){var t=document.getElementById('code-entity').textContent;navigator.clipboard.writeText(t).then(function(){b.textContent='Copied!';setTimeout(function(){b.textContent='Copy'},1500)})})(this)">Copy</button>
+        <pre class="code-block"><code><span class="hl-tag">&lt;div</span> <span class="hl-attr">data-anatomyfyi</span>=<span class="hl-val">"entity"</span>
+     <span class="hl-attr">data-slug</span>=<span class="hl-val">"example-structures"</span>
+     <span class="hl-attr">data-style</span>=<span class="hl-val">"modern"</span>
+     <span class="hl-attr">data-theme</span>=<span class="hl-val">"auto"</span><span class="hl-tag">&gt;&lt;/div&gt;</span></code></pre>
+        <script type="text/plain" id="code-entity">&lt;div data-anatomyfyi="entity" data-slug="example-structures" data-style="modern" data-theme="auto"&gt;&lt;/div&gt;</script>
+      </div>
+      <div x-show="activeWidget==='glossary'" x-cloak class="code-block-wrapper pt-4">
+        <span class="code-lang-badge">HTML</span>
+        <button class="code-copy-btn" onclick="(function(b){var t=document.getElementById('code-glossary').textContent;navigator.clipboard.writeText(t).then(function(){b.textContent='Copied!';setTimeout(function(){b.textContent='Copy'},1500)})})(this)">Copy</button>
+        <pre class="code-block"><code><span class="hl-tag">&lt;div</span> <span class="hl-attr">data-anatomyfyi</span>=<span class="hl-val">"glossary"</span>
+     <span class="hl-attr">data-slug</span>=<span class="hl-val">"medical-term"</span>
+     <span class="hl-attr">data-theme</span>=<span class="hl-val">"auto"</span><span class="hl-tag">&gt;&lt;/div&gt;</span></code></pre>
+        <script type="text/plain" id="code-glossary">&lt;div data-anatomyfyi="glossary" data-slug="medical-term" data-theme="auto"&gt;&lt;/div&gt;</script>
+      </div>
+      <div x-show="activeWidget==='guide'" x-cloak class="code-block-wrapper pt-4">
+        <span class="code-lang-badge">HTML</span>
+        <button class="code-copy-btn" onclick="(function(b){var t=document.getElementById('code-guide').textContent;navigator.clipboard.writeText(t).then(function(){b.textContent='Copied!';setTimeout(function(){b.textContent='Copy'},1500)})})(this)">Copy</button>
+        <pre class="code-block"><code><span class="hl-tag">&lt;div</span> <span class="hl-attr">data-anatomyfyi</span>=<span class="hl-val">"guide"</span>
+     <span class="hl-attr">data-slug</span>=<span class="hl-val">"health-guide-slug"</span>
+     <span class="hl-attr">data-theme</span>=<span class="hl-val">"auto"</span><span class="hl-tag">&gt;&lt;/div&gt;</span></code></pre>
+        <script type="text/plain" id="code-guide">&lt;div data-anatomyfyi="guide" data-slug="health-guide-slug" data-theme="auto"&gt;&lt;/div&gt;</script>
+      </div>
+      <div x-show="activeWidget==='search'" x-cloak class="code-block-wrapper pt-4">
+        <span class="code-lang-badge">HTML</span>
+        <button class="code-copy-btn" onclick="(function(b){var t=document.getElementById('code-search').textContent;navigator.clipboard.writeText(t).then(function(){b.textContent='Copied!';setTimeout(function(){b.textContent='Copy'},1500)})})(this)">Copy</button>
+        <pre class="code-block"><code><span class="hl-tag">&lt;div</span> <span class="hl-attr">data-anatomyfyi</span>=<span class="hl-val">"search"</span>
+     <span class="hl-attr">data-placeholder</span>=<span class="hl-val">"Search Structures…"</span>
+     <span class="hl-attr">data-theme</span>=<span class="hl-val">"auto"</span><span class="hl-tag">&gt;&lt;/div&gt;</span></code></pre>
+        <script type="text/plain" id="code-search">&lt;div data-anatomyfyi="search" data-placeholder="Search Structures…" data-theme="auto"&gt;&lt;/div&gt;</script>
+      </div>
+      <div x-show="activeWidget==='compare'" x-cloak class="code-block-wrapper pt-4">
+        <span class="code-lang-badge">HTML</span>
+        <button class="code-copy-btn" onclick="(function(b){var t=document.getElementById('code-compare').textContent;navigator.clipboard.writeText(t).then(function(){b.textContent='Copied!';setTimeout(function(){b.textContent='Copy'},1500)})})(this)">Copy</button>
+        <pre class="code-block"><code><span class="hl-tag">&lt;div</span> <span class="hl-attr">data-anatomyfyi</span>=<span class="hl-val">"compare"</span>
+     <span class="hl-attr">data-slug-a</span>=<span class="hl-val">"option-a"</span>
+     <span class="hl-attr">data-slug-b</span>=<span class="hl-val">"option-b"</span>
+     <span class="hl-attr">data-theme</span>=<span class="hl-val">"auto"</span><span class="hl-tag">&gt;&lt;/div&gt;</span></code></pre>
+        <script type="text/plain" id="code-compare">&lt;div data-anatomyfyi="compare" data-slug-a="option-a" data-slug-b="option-b" data-theme="auto"&gt;&lt;/div&gt;</script>
+      </div>
+      <div x-show="activeWidget==='faq'" x-cloak class="code-block-wrapper pt-4">
+        <span class="code-lang-badge">HTML</span>
+        <button class="code-copy-btn" onclick="(function(b){var t=document.getElementById('code-faq').textContent;navigator.clipboard.writeText(t).then(function(){b.textContent='Copied!';setTimeout(function(){b.textContent='Copy'},1500)})})(this)">Copy</button>
+        <pre class="code-block"><code><span class="hl-tag">&lt;div</span> <span class="hl-attr">data-anatomyfyi</span>=<span class="hl-val">"faq"</span>
+     <span class="hl-attr">data-slug</span>=<span class="hl-val">"example-structures"</span>
+     <span class="hl-attr">data-theme</span>=<span class="hl-val">"auto"</span><span class="hl-tag">&gt;&lt;/div&gt;</span></code></pre>
+        <script type="text/plain" id="code-faq">&lt;div data-anatomyfyi="faq" data-slug="example-structures" data-theme="auto"&gt;&lt;/div&gt;</script>
+      </div>
+      <div x-show="activeWidget==='inline'" x-cloak class="code-block-wrapper pt-4">
+        <span class="code-lang-badge">HTML</span>
+        <button class="code-copy-btn" onclick="(function(b){var t=document.getElementById('code-inline').textContent;navigator.clipboard.writeText(t).then(function(){b.textContent='Copied!';setTimeout(function(){b.textContent='Copy'},1500)})})(this)">Copy</button>
+        <pre class="code-block"><code><span class="hl-comment">&lt;!-- System badge (AnatomyFYI) --&gt;</span>
+<span class="hl-tag">&lt;span</span> <span class="hl-attr">data-anatomyfyi</span>=<span class="hl-val">"system-badge"</span> <span class="hl-attr">data-slug</span>=<span class="hl-val">"cardiovascular"</span><span class="hl-tag">&gt;&lt;/span&gt;</span>
+
+<span class="hl-comment">&lt;!-- Dosage badge (PillFYI) --&gt;</span>
+<span class="hl-tag">&lt;span</span> <span class="hl-attr">data-pillfyi</span>=<span class="hl-val">"dosage-badge"</span> <span class="hl-attr">data-slug</span>=<span class="hl-val">"aspirin"</span><span class="hl-tag">&gt;&lt;/span&gt;</span>
+
+<span class="hl-comment">&lt;!-- Macro badge (NutriFYI) --&gt;</span>
+<span class="hl-tag">&lt;span</span> <span class="hl-attr">data-nutrifyi</span>=<span class="hl-val">"macro-badge"</span> <span class="hl-attr">data-slug</span>=<span class="hl-val">"chicken-breast"</span><span class="hl-tag">&gt;&lt;/span&gt;</span></code></pre>
+        <script type="text/plain" id="code-inline">&lt;span data-anatomyfyi="system-badge" data-slug="cardiovascular"&gt;&lt;/span&gt;
+&lt;span data-pillfyi="dosage-badge" data-slug="aspirin"&gt;&lt;/span&gt;
+&lt;span data-nutrifyi="macro-badge" data-slug="chicken-breast"&gt;&lt;/span&gt;</script>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     WIDGET OPTIONS
+═══════════════════════════════════════════════════════════ -->
+<section id="options" class="border-t border-gray-100 dark:border-gray-800 py-16">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    <h2 class="text-3xl font-bold mb-8 text-center">Widget Options</h2>
+    <div class="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+            <th class="text-left px-4 py-3 font-semibold text-gray-700 dark:text-gray-300 font-mono text-xs">Attribute</th>
+            <th class="text-left px-4 py-3 font-semibold text-gray-700 dark:text-gray-300 text-xs">Values</th>
+            <th class="text-left px-4 py-3 font-semibold text-gray-700 dark:text-gray-300 text-xs">Default</th>
+            <th class="text-left px-4 py-3 font-semibold text-gray-700 dark:text-gray-300 text-xs">Description</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
+          <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+            <td class="px-4 py-3 font-mono text-xs text-accent">data-anatomyfyi</td>
+            <td class="px-4 py-3 text-xs font-mono text-gray-600 dark:text-gray-400">entity · glossary · guide · search · compare · faq</td>
+            <td class="px-4 py-3 text-xs text-gray-500">required</td>
+            <td class="px-4 py-3 text-xs text-gray-600 dark:text-gray-400">Widget type to render</td>
+          </tr>
+          <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+            <td class="px-4 py-3 font-mono text-xs text-gray-600 dark:text-gray-400">data-slug</td>
+            <td class="px-4 py-3 text-xs font-mono text-gray-600 dark:text-gray-400">string</td>
+            <td class="px-4 py-3 text-xs text-gray-500">required</td>
+            <td class="px-4 py-3 text-xs text-gray-600 dark:text-gray-400">Entity slug from anatomyfyi.com</td>
+          </tr>
+          <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+            <td class="px-4 py-3 font-mono text-xs text-gray-600 dark:text-gray-400">data-style</td>
+            <td class="px-4 py-3 text-xs font-mono text-gray-600 dark:text-gray-400">clinical · modern</td>
+            <td class="px-4 py-3 text-xs text-gray-500">clinical</td>
+            <td class="px-4 py-3 text-xs text-gray-600 dark:text-gray-400">Visual style variant</td>
+          </tr>
+          <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+            <td class="px-4 py-3 font-mono text-xs text-gray-600 dark:text-gray-400">data-theme</td>
+            <td class="px-4 py-3 text-xs font-mono text-gray-600 dark:text-gray-400">light · dark · sepia · auto</td>
+            <td class="px-4 py-3 text-xs text-gray-500">auto</td>
+            <td class="px-4 py-3 text-xs text-gray-600 dark:text-gray-400">Color theme (auto follows OS preference)</td>
+          </tr>
+          <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+            <td class="px-4 py-3 font-mono text-xs text-gray-600 dark:text-gray-400">data-lang</td>
+            <td class="px-4 py-3 text-xs font-mono text-gray-600 dark:text-gray-400">en · es · fr · de · ja …</td>
+            <td class="px-4 py-3 text-xs text-gray-500">en</td>
+            <td class="px-4 py-3 text-xs text-gray-600 dark:text-gray-400">Display language</td>
+          </tr>
+          <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+            <td class="px-4 py-3 font-mono text-xs text-gray-600 dark:text-gray-400">data-no-snippet</td>
+            <td class="px-4 py-3 text-xs font-mono text-gray-600 dark:text-gray-400">true</td>
+            <td class="px-4 py-3 text-xs text-gray-500">false</td>
+            <td class="px-4 py-3 text-xs text-gray-600 dark:text-gray-400">Disable rich snippet injection into host page</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     STYLES & THEMES
+═══════════════════════════════════════════════════════════ -->
+<section class="border-t border-gray-100 dark:border-gray-800 py-16 bg-gray-50 dark:bg-gray-900/50">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    <h2 class="text-3xl font-bold mb-3 text-center">Styles &amp; Themes</h2>
+    <p class="text-center text-gray-500 dark:text-gray-400 mb-10">2 styles × 4 themes = 8 combinations. All CSS-isolated via Shadow DOM.</p>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+      <div class="rounded-xl border-2 p-4 bg-white" style="border-color:#E11D48">
+        <div class="w-8 h-8 rounded-lg mb-2" style="background:#E11D48"></div>
+        <div class="font-semibold text-sm mb-0.5">Light</div>
+        <div class="text-xs text-gray-500">Clean white background</div>
+        <div class="mt-2 font-mono text-xs text-gray-400">data-theme="light"</div>
+      </div>
+      <div class="rounded-xl border-2 p-4 bg-gray-900 text-white border-gray-700">
+        <div class="w-8 h-8 rounded-lg mb-2" style="background:#E11D48"></div>
+        <div class="font-semibold text-sm mb-0.5">Dark</div>
+        <div class="text-xs text-gray-400">Deep dark background</div>
+        <div class="mt-2 font-mono text-xs text-gray-500">data-theme="dark"</div>
+      </div>
+      <div class="rounded-xl border-2 p-4 border-yellow-200" style="background:#f5f0e8">
+        <div class="w-8 h-8 rounded-lg mb-2" style="background:#E11D48"></div>
+        <div class="font-semibold text-sm mb-0.5">Sepia</div>
+        <div class="text-xs" style="color:#8b7d6b">Warm reading tone</div>
+        <div class="mt-2 font-mono text-xs" style="color:#8b7d6b">data-theme="sepia"</div>
+      </div>
+      <div class="rounded-xl border-2 p-4 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
+        <div class="w-8 h-8 rounded-lg mb-2 bg-gradient-to-br from-gray-200 to-gray-800"></div>
+        <div class="font-semibold text-sm mb-0.5">Auto</div>
+        <div class="text-xs text-gray-500">Follows OS preference</div>
+        <div class="mt-2 font-mono text-xs text-gray-400">data-theme="auto"</div>
+      </div>
+    </div>
+    <div class="max-w-3xl mx-auto">
+      <div class="code-block-wrapper pt-4">
+        <span class="code-lang-badge">HTML</span>
+        <button class="code-copy-btn" onclick="(function(b){var t=document.getElementById('theme-code').textContent;navigator.clipboard.writeText(t).then(function(){b.textContent='Copied!';setTimeout(function(){b.textContent='Copy'},1500)})})(this)">Copy</button>
+        <pre class="code-block"><code><span class="hl-comment">&lt;!-- Clinical style + sepia theme --&gt;</span>
+<span class="hl-tag">&lt;div</span> <span class="hl-attr">data-anatomyfyi</span>=<span class="hl-val">"entity"</span>
+     <span class="hl-attr">data-slug</span>=<span class="hl-val">"example-structures"</span>
+     <span class="hl-attr">data-style</span>=<span class="hl-val">"clinical"</span>
+     <span class="hl-attr">data-theme</span>=<span class="hl-val">"sepia"</span><span class="hl-tag">&gt;&lt;/div&gt;</span></code></pre>
+        <script type="text/plain" id="theme-code">&lt;div data-anatomyfyi="entity" data-slug="example-structures" data-style="clinical" data-theme="sepia"&gt;&lt;/div&gt;</script>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     CDN OPTIONS
+═══════════════════════════════════════════════════════════ -->
+<section id="cdn" class="border-t border-gray-100 dark:border-gray-800 py-16">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    <h2 class="text-3xl font-bold mb-3 text-center">CDN Options</h2>
+    <p class="text-center text-gray-500 dark:text-gray-400 mb-10">Multiple delivery options for every use case.</p>
+    <div class="grid md:grid-cols-3 gap-6">
+      <!-- jsDelivr (recommended) -->
+      <div class="rounded-xl border-2 p-5 relative" style="border-color:#E11D48">
+        <div class="absolute -top-3 left-4 px-2.5 py-0.5 text-xs font-semibold text-white rounded-full" style="background:#E11D48">Recommended</div>
+        <div class="font-bold mb-1">jsDelivr</div>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Global CDN with automatic version resolution. Zero config.</p>
+        <div class="code-block-wrapper pt-4">
+          <span class="code-lang-badge">HTML</span>
+          <button class="code-copy-btn" onclick="(function(b){var t=document.getElementById('cdn-jsdelivr').textContent;navigator.clipboard.writeText(t).then(function(){b.textContent='Copied!';setTimeout(function(){b.textContent='Copy'},1500)})})(this)">Copy</button>
+          <pre class="code-block" style="font-size:11px"><code><span class="hl-tag">&lt;script</span> <span class="hl-attr">src</span>=<span class="hl-val">"https://cdn.jsdelivr.net/npm/anatomyfyi-embed@1/dist/embed.min.js"</span><span class="hl-tag">&gt;&lt;/script&gt;</span></code></pre>
+          <script type="text/plain" id="cdn-jsdelivr">&lt;script src="https://cdn.jsdelivr.net/npm/anatomyfyi-embed@1/dist/embed.min.js"&gt;&lt;/script&gt;</script>
+        </div>
+      </div>
+      <!-- npm -->
+      <div class="rounded-xl border p-5 border-gray-200 dark:border-gray-700">
+        <div class="font-bold mb-1">npm / bundler</div>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Install via npm and import in your build pipeline.</p>
+        <div class="code-block-wrapper pt-4">
+          <span class="code-lang-badge">Shell</span>
+          <button class="code-copy-btn" onclick="(function(b){var t=document.getElementById('cdn-npm').textContent;navigator.clipboard.writeText(t).then(function(){b.textContent='Copied!';setTimeout(function(){b.textContent='Copy'},1500)})})(this)">Copy</button>
+          <pre class="code-block" style="font-size:11px"><code><span class="hl-fn">npm</span> install anatomyfyi-embed
+
+<span class="hl-comment">// In your JS/TS:</span>
+<span class="hl-kw">import</span> <span class="hl-str">'anatomyfyi-embed'</span><span class="hl-punct">;</span></code></pre>
+          <script type="text/plain" id="cdn-npm">npm install anatomyfyi-embed</script>
+        </div>
+      </div>
+      <!-- Self-hosted -->
+      <div class="rounded-xl border p-5 border-gray-200 dark:border-gray-700">
+        <div class="font-bold mb-1">Self-hosted (R2)</div>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Download and host on your own CDN for full control.</p>
+        <div class="code-block-wrapper pt-4">
+          <span class="code-lang-badge">HTML</span>
+          <button class="code-copy-btn" onclick="(function(b){var t=document.getElementById('cdn-self').textContent;navigator.clipboard.writeText(t).then(function(){b.textContent='Copied!';setTimeout(function(){b.textContent='Copy'},1500)})})(this)">Copy</button>
+          <pre class="code-block" style="font-size:11px"><code><span class="hl-tag">&lt;script</span> <span class="hl-attr">src</span>=<span class="hl-val">"/assets/anatomyfyi-embed.min.js"</span><span class="hl-tag">&gt;&lt;/script&gt;</span></code></pre>
+          <script type="text/plain" id="cdn-self">&lt;script src="/assets/anatomyfyi-embed.min.js"&gt;&lt;/script&gt;</script>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     HEALTH FYI FAMILY NETWORK
+═══════════════════════════════════════════════════════════ -->
+<section class="border-t border-gray-100 dark:border-gray-800 py-16 bg-gray-50 dark:bg-gray-900/50">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    <h2 class="text-3xl font-bold mb-3 text-center">Health FYI Family</h2>
+    <p class="text-center text-gray-500 dark:text-gray-400 mb-10">Part of the <a href="https://fyipedia.com" target="_blank" rel="noopener" class="underline underline-offset-2 hover:text-gray-700 dark:hover:text-gray-200">FYIPedia</a> open-source developer tools ecosystem. Hub: <a href="https://bodyfyi.com" target="_blank" rel="noopener" class="underline underline-offset-2 hover:text-gray-700 dark:hover:text-gray-200">bodyfyi.com</a></p>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <a href="https://anatomyfyi.com" target="_blank" rel="noopener" class="group p-5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 hover:border-gray-300 dark:hover:border-gray-600 transition-all hover:shadow-sm">
+        <div class="flex items-center gap-2.5 mb-2">
+          <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:#E11D4822">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#E11D48" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </div>
+          <div>
+            <div class="font-semibold text-sm">AnatomyFYI</div>
+            <div class="text-xs text-gray-400">anatomyfyi.com</div>
+          </div>
+        </div>
+        <p class="text-xs text-gray-500 dark:text-gray-400">14,692 anatomical structures, systems, organs — human body reference</p>
+        <div class="mt-3 text-xs font-mono" style="color:#E11D48">data-anatomyfyi</div>
+      </a>
+      <a href="https://pillfyi.com" target="_blank" rel="noopener" class="group p-5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 hover:border-gray-300 dark:hover:border-gray-600 transition-all hover:shadow-sm">
+        <div class="flex items-center gap-2.5 mb-2">
+          <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:#14B8A622">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#14B8A6" stroke-width="2"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7z"/><path d="m8.5 8.5 7 7"/></svg>
+          </div>
+          <div>
+            <div class="font-semibold text-sm">PillFYI</div>
+            <div class="text-xs text-gray-400">pillfyi.com</div>
+          </div>
+        </div>
+        <p class="text-xs text-gray-500 dark:text-gray-400">Pill identification, FDA drug database, dosage reference</p>
+        <div class="mt-3 text-xs font-mono" style="color:#14B8A6">data-pillfyi</div>
+      </a>
+      <a href="https://drugfyi.com" target="_blank" rel="noopener" class="group p-5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 hover:border-gray-300 dark:hover:border-gray-600 transition-all hover:shadow-sm">
+        <div class="flex items-center gap-2.5 mb-2">
+          <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:#2DD4BF22">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2DD4BF" stroke-width="2"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18"/></svg>
+          </div>
+          <div>
+            <div class="font-semibold text-sm">DrugFYI</div>
+            <div class="text-xs text-gray-400">drugfyi.com</div>
+          </div>
+        </div>
+        <p class="text-xs text-gray-500 dark:text-gray-400">Drug interactions, pharmacology, side effects, contraindications</p>
+        <div class="mt-3 text-xs font-mono" style="color:#2DD4BF">data-drugfyi</div>
+      </a>
+      <a href="https://nutrifyi.com" target="_blank" rel="noopener" class="group p-5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 hover:border-gray-300 dark:hover:border-gray-600 transition-all hover:shadow-sm">
+        <div class="flex items-center gap-2.5 mb-2">
+          <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:#22C55E22">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div>
+            <div class="font-semibold text-sm">NutriFYI</div>
+            <div class="text-xs text-gray-400">nutrifyi.com</div>
+          </div>
+        </div>
+        <p class="text-xs text-gray-500 dark:text-gray-400">Nutrition data, food composition, dietary analysis &amp; macros</p>
+        <div class="mt-3 text-xs font-mono" style="color:#22C55E">data-nutrifyi</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     FYIPEDIA ECOSYSTEM
+═══════════════════════════════════════════════════════════ -->
+<section class="border-t border-gray-100 dark:border-gray-800 py-16">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    <h2 class="text-2xl font-bold mb-3 text-center">FYIPedia Developer Tools</h2>
+    <p class="text-center text-gray-500 dark:text-gray-400 mb-8 text-sm">Embed widgets across 11 knowledge families</p>
+    <div class="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+            <th class="text-left px-4 py-3 font-semibold text-gray-700 dark:text-gray-300 text-xs">Family</th>
+            <th class="text-left px-4 py-3 font-semibold text-gray-700 dark:text-gray-300 text-xs">Sites</th>
+            <th class="text-left px-4 py-3 font-semibold text-gray-700 dark:text-gray-300 text-xs">Widget Package</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100 dark:divide-gray-800 text-xs">
+          <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 font-semibold" style="color:#E11D48">
+            <td class="px-4 py-3">Health FYI</td>
+            <td class="px-4 py-3 text-gray-600 dark:text-gray-400 font-normal">AnatomyFYI · PillFYI · DrugFYI · NutriFYI</td>
+            <td class="px-4 py-3 font-mono font-normal text-gray-600 dark:text-gray-400">anatomyfyi-embed</td>
+          </tr>
+          <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+            <td class="px-4 py-3 text-gray-700 dark:text-gray-300">Creative FYI</td>
+            <td class="px-4 py-3 text-gray-500">ColorFYI · FontFYI · EmojiFYI · SymbolFYI · UnicodeFYI</td>
+            <td class="px-4 py-3 font-mono text-gray-500">colorfyi-embed …</td>
+          </tr>
+          <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+            <td class="px-4 py-3 text-gray-700 dark:text-gray-300">Nature FYI</td>
+            <td class="px-4 py-3 text-gray-500">SpeciesFYI · BirdFYI · FishFYI · PlantFYI · DinoFYI</td>
+            <td class="px-4 py-3 font-mono text-gray-500">speciesfyi-embed …</td>
+          </tr>
+          <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+            <td class="px-4 py-3 text-gray-700 dark:text-gray-300">Science FYI</td>
+            <td class="px-4 py-3 text-gray-500">ChemFYI · AlloyFYI · GemFYI · StarFYI · MineralFYI</td>
+            <td class="px-4 py-3 font-mono text-gray-500">chemfyi-embed …</td>
+          </tr>
+          <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+            <td class="px-4 py-3 text-gray-700 dark:text-gray-300">Transport FYI</td>
+            <td class="px-4 py-3 text-gray-500">AirportFYI · AirlineFYI · PlaneFYI · TrainFYI</td>
+            <td class="px-4 py-3 font-mono text-gray-500">airportfyi-embed …</td>
+          </tr>
+          <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+            <td class="px-4 py-3 text-gray-700 dark:text-gray-300">Geo FYI</td>
+            <td class="px-4 py-3 text-gray-500">DistanceFYI · MountainFYI · QuakeFYI · ZipFYI</td>
+            <td class="px-4 py-3 font-mono text-gray-500">distancefyi-embed …</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="text-center mt-4 text-sm text-gray-400">Plus: Beverage FYI · Tag FYI · Network FYI · Utility FYI · Guide FYI — <a href="https://fyipedia.com/developers/" target="_blank" rel="noopener" class="underline underline-offset-2 hover:text-gray-600">fyipedia.com/developers</a></p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════════════════════════ -->
+<footer class="border-t border-gray-200 dark:border-gray-800 py-12 bg-gray-50 dark:bg-gray-900">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    <!-- Medical Disclaimer -->
+    <div class="mb-8 p-4 rounded-xl border border-yellow-200 dark:border-yellow-900 bg-yellow-50 dark:bg-yellow-950/30 text-sm text-yellow-800 dark:text-yellow-200">
+      <div class="flex items-start gap-2">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="flex-shrink-0 mt-0.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        <div>
+          <strong>⚕️ Medical Disclaimer:</strong> All Health FYI widgets include an educational disclaimer. This information is for educational purposes only and should not replace professional medical advice, diagnosis, or treatment. Always consult a qualified healthcare provider for medical concerns.
+        </div>
+      </div>
+    </div>
+    <div class="grid md:grid-cols-3 gap-8 mb-8">
+      <div>
+        <div class="flex items-center gap-2 mb-3">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="color:#E11D48" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          <span class="font-semibold">AnatomyFYI Embed</span>
+        </div>
+        <p class="text-sm text-gray-500 dark:text-gray-400">Evidence-based health &amp; medical widgets for any website. Shadow DOM isolated. MIT licensed.</p>
+      </div>
+      <div>
+        <div class="font-semibold text-sm mb-3">Resources</div>
+        <ul class="space-y-1.5 text-sm text-gray-500 dark:text-gray-400">
+          <li><a href="https://anatomyfyi.com" target="_blank" rel="noopener" class="hover:text-gray-900 dark:hover:text-gray-100 transition-colors">AnatomyFYI Website ↗</a></li>
+          <li><a href="https://anatomyfyi.com/api/v1/" target="_blank" rel="noopener" class="hover:text-gray-900 dark:hover:text-gray-100 transition-colors">REST API Docs ↗</a></li>
+          <li><a href="https://github.com/fyipedia/anatomyfyi-embed" target="_blank" rel="noopener" class="hover:text-gray-900 dark:hover:text-gray-100 transition-colors">GitHub Repository ↗</a></li>
+          <li><a href="https://www.npmjs.com/package/anatomyfyi-embed" target="_blank" rel="noopener" class="hover:text-gray-900 dark:hover:text-gray-100 transition-colors">npm Package ↗</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="font-semibold text-sm mb-3">Health FYI Family</div>
+        <ul class="space-y-1.5 text-sm text-gray-500 dark:text-gray-400">
+          <li><a href="https://anatomyfyi.com" target="_blank" rel="noopener" class="hover:text-gray-900 dark:hover:text-gray-100 transition-colors">AnatomyFYI ↗</a></li>
+          <li><a href="https://pillfyi.com" target="_blank" rel="noopener" class="hover:text-gray-900 dark:hover:text-gray-100 transition-colors">PillFYI ↗</a></li>
+          <li><a href="https://drugfyi.com" target="_blank" rel="noopener" class="hover:text-gray-900 dark:hover:text-gray-100 transition-colors">DrugFYI ↗</a></li>
+          <li><a href="https://nutrifyi.com" target="_blank" rel="noopener" class="hover:text-gray-900 dark:hover:text-gray-100 transition-colors">NutriFYI ↗</a></li>
+          <li><a href="https://bodyfyi.com" target="_blank" rel="noopener" class="hover:text-gray-900 dark:hover:text-gray-100 transition-colors">BodyFYI (Hub) ↗</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="pt-6 border-t border-gray-200 dark:border-gray-700 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-400">
+      <span>© 2024 FYIPedia. MIT License. <a href="https://fyipedia.com" target="_blank" rel="noopener" class="hover:text-gray-600 dark:hover:text-gray-300 underline underline-offset-2">fyipedia.com</a></span>
+      <button @click="darkMode=!darkMode; document.documentElement.classList.toggle('dark'); localStorage.setItem('theme', darkMode?'dark':'light')" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-colors">
+        <svg x-show="!darkMode" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg x-show="darkMode" x-cloak width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        <span x-text="darkMode ? 'Light mode' : 'Dark mode'"></span>
+      </button>
+    </div>
+  </div>
+</footer>
+
 </body>
 </html>
