@@ -1,0 +1,43 @@
+{
+  "name": "anatomyfyi-embed",
+  "version": "1.0.0",
+  "description": "Embed AnatomyFYI widgets — anatomical structures, body systems, glossary terms. 14,692 structures. Zero dependencies, Shadow DOM, 4 themes. Medical disclaimer included.",
+  "main": "dist/embed.min.js",
+  "module": "dist/embed.esm.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "anatomy",
+    "human-body",
+    "organs",
+    "bones",
+    "muscles",
+    "body-systems",
+    "medical",
+    "embed",
+    "widget",
+    "anatomyfyi",
+    "anatomyfyi.com",
+    "shadow-dom",
+    "zero-dependencies",
+    "fyipedia",
+    "healthfyi"
+  ],
+  "homepage": "https://widget.anatomyfyi.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fyipedia/anatomyfyi-embed"
+  },
+  "bugs": {
+    "url": "https://github.com/fyipedia/anatomyfyi-embed/issues"
+  },
+  "license": "MIT",
+  "author": "FYIPedia <dev@fyipedia.com>",
+  "publishConfig": {
+    "access": "public"
+  }
+}
