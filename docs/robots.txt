@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# AnatomyFYI Embed Widget
+# Main site: https://anatomyfyi.com
+# Widget docs: https://widget.anatomyfyi.com
+# npm: https://www.npmjs.com/package/anatomyfyi-embed
