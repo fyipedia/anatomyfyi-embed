@@ -1,0 +1,26 @@
+# AnatomyFYI Embed Widget
+
+> Embeddable AnatomyFYI widgets for any website. Zero dependencies, Shadow DOM isolation, 4 themes (light/dark/sepia/auto).
+
+## Quick Start
+
+Add to any HTML page:
+- Script: <script src="https://cdn.jsdelivr.net/npm/anatomyfyi-embed@1/dist/embed.min.js"></script>
+
+## Links
+
+- Main site: https://anatomyfyi.com
+- Widget docs: https://widget.anatomyfyi.com
+- npm: https://www.npmjs.com/package/anatomyfyi-embed
+- GitHub: https://github.com/fyipedia/anatomyfyi-embed
+- API: https://anatomyfyi.com/developers/
+
+## Health FYI Widget Family
+
+- [PillFYI Widget](https://widget.pillfyi.com)
+- [DrugFYI Widget](https://widget.drugfyi.com)
+- [NutriFYI Widget](https://widget.nutrifyi.com)
+
+## Part of FYIPedia
+
+Open-source developer tools ecosystem — https://fyipedia.com
