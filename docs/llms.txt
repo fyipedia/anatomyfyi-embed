@@ -1,21 +1,50 @@
 # AnatomyFYI Embed Widget
 
-> Embeddable AnatomyFYI widgets for any website. Zero dependencies, Shadow DOM isolation, 4 themes (light/dark/sepia/auto).
+> 14,692 anatomical structures. Embeddable widgets for any website. Zero dependencies, Shadow DOM isolation.
 
 ## Quick Start
 
-Add to any HTML page:
-- Script: <script src="https://cdn.jsdelivr.net/npm/anatomyfyi-embed@1/dist/embed.min.js"></script>
+```html
+<script src="https://cdn.jsdelivr.net/npm/anatomyfyi-embed@1/dist/embed.min.js"></script>
+<div data-anatomyfyi="entity" data-slug="example"></div>
+```
+
+## Available Widget Types (6)
+
+- entity: `data-anatomyfyi="entity"`
+- glossary: `data-anatomyfyi="glossary"`
+- guide: `data-anatomyfyi="guide"`
+- compare: `data-anatomyfyi="compare"`
+- search: `data-anatomyfyi="search"`
+- faq: `data-anatomyfyi="faq"`
+
+## Customization
+
+- **Themes**: light, dark, sepia, auto (follows system preference)
+- **Sizes**: compact (280px), default (420px), large (720px)
+- **Styles**: modern, classic
+
+```html
+<div data-anatomyfyi="entity" data-slug="example"
+     data-theme="auto" data-size="compact" data-style-variant="modern"></div>
+```
+
+## Integration Methods
+
+1. **Script tag** (recommended): `<script src="https://cdn.jsdelivr.net/npm/anatomyfyi-embed@1/dist/embed.min.js"></script>`
+2. **iframe**: `https://anatomyfyi.com/iframe/entity/{slug}/`
+3. **oEmbed**: `https://anatomyfyi.com/oembed?url={page_url}&format=json`
+4. **Badge**: `https://anatomyfyi.com/badge/site.svg`
 
 ## Links
 
 - Main site: https://anatomyfyi.com
 - Widget docs: https://widget.anatomyfyi.com
-- npm: https://www.npmjs.com/package/anatomyfyi-embed
+- API documentation: https://anatomyfyi.com/developers/
+- npm package: https://www.npmjs.com/package/anatomyfyi-embed
 - GitHub: https://github.com/fyipedia/anatomyfyi-embed
-- API: https://anatomyfyi.com/developers/
 
-## Health FYI Widget Family
+## Health FYI Widget Network
 
 - [PillFYI Widget](https://widget.pillfyi.com)
 - [DrugFYI Widget](https://widget.drugfyi.com)
