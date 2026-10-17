@@ -758,7 +758,7 @@ function renderError(container, message, config) {
   container.innerHTML = `
     <div class="healthfyi-error">
       <p>${message}</p>
-      <a href="https://${config.domain}" target="_blank" rel="noopener">
+      <a href="https://${config.domain}" target="_blank" rel="nofollow noopener">
         Visit ${config.name}
       </a>
     </div>
@@ -767,7 +767,7 @@ function renderError(container, message, config) {
 var externalLinkIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>`;
 var MEDICAL_DISCLAIMER = "For educational purposes only. Consult a healthcare professional for medical advice.";
 function poweredByHTML(config) {
-  return `<div class="healthfyi-footer"><span class="healthfyi-disclaimer">${MEDICAL_DISCLAIMER}</span><span class="healthfyi-powered">Powered by <a href="https://${config.domain}" target="_blank" rel="noopener">${config.name}</a></span></div>`;
+  return `<div class="healthfyi-footer"><span class="healthfyi-disclaimer">${MEDICAL_DISCLAIMER}</span><span class="healthfyi-powered">Powered by <a href="https://${config.domain}" target="_blank" rel="nofollow noopener">${config.name}</a></span></div>`;
 }
 
 // src/api.ts
@@ -827,7 +827,7 @@ function kvRow(label, value) {
   return `<div class="healthfyi-kv-row"><span class="healthfyi-kv-label">${esc(label)}</span><span class="healthfyi-kv-value">${esc(String(value))}</span></div>`;
 }
 function viewLink(url, label, _config) {
-  return `<div class="healthfyi-view-link"><a href="${esc(url)}" target="_blank" rel="noopener">${esc(label)} ${externalLinkIcon}</a></div>`;
+  return `<div class="healthfyi-view-link"><a href="${esc(url)}" target="_blank" rel="nofollow noopener">${esc(label)} ${externalLinkIcon}</a></div>`;
 }
 function cardFooter(url, label, config) {
   return `${viewLink(url, label, config)}${poweredByHTML(config)}`;
@@ -843,7 +843,7 @@ function renderGlossaryCard(data, config) {
   const glossaryUrl = `https://${config.domain}/glossary/`;
   const relatedTerms = data.related_terms;
   const relatedPills = relatedTerms && relatedTerms.length > 0 ? `<div class="healthfyi-pills">${relatedTerms.map(
-    (rt) => `<a class="healthfyi-pill" href="https://${config.domain}/glossary/${esc(rt.slug)}/" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;">${esc(rt.name)}</a>`
+    (rt) => `<a class="healthfyi-pill" href="https://${config.domain}/glossary/${esc(rt.slug)}/" target="_blank" rel="nofollow noopener" style="text-decoration:none;color:inherit;">${esc(rt.name)}</a>`
   ).join("")}</div>` : "";
   return `
     <div class="healthfyi-header">
@@ -857,8 +857,8 @@ function renderGlossaryCard(data, config) {
     </div>
     ${extended ? `<div style="padding:0 18px 10px;font-size:0.85rem;color:var(--muted);line-height:1.5;">${esc(extended)}</div>` : ""}
     ${relatedPills}
-    <div class="healthfyi-view-link"><a href="${termUrl}" target="_blank" rel="noopener">${esc(name)} ${externalLinkIcon}</a></div>
-    <div class="healthfyi-view-link"><a href="${glossaryUrl}" target="_blank" rel="noopener">Full glossary on ${esc(config.name)} ${externalLinkIcon}</a></div>
+    <div class="healthfyi-view-link"><a href="${termUrl}" target="_blank" rel="nofollow noopener">${esc(name)} ${externalLinkIcon}</a></div>
+    <div class="healthfyi-view-link"><a href="${glossaryUrl}" target="_blank" rel="nofollow noopener">Full glossary on ${esc(config.name)} ${externalLinkIcon}</a></div>
     ${poweredByHTML(config)}
   `;
 }
@@ -949,7 +949,7 @@ function renderAnatomyCard(data, config) {
       ${kvRow("Region", regionName)}
     </div>
     <div class="healthfyi-view-link">
-      <a href="${esc(entityUrl)}" target="_blank" rel="noopener">View on ${esc(config.name)} ${externalLinkIcon}</a>
+      <a href="${esc(entityUrl)}" target="_blank" rel="nofollow noopener">View on ${esc(config.name)} ${externalLinkIcon}</a>
     </div>
     ${poweredByHTML(config)}
   `;
@@ -992,7 +992,7 @@ function renderPillCard(data, config) {
       ${kvRow("Manufacturer", manufacturerName)}
     </div>
     <div class="healthfyi-view-link">
-      <a href="${esc(drugUrl)}" target="_blank" rel="noopener">View on ${esc(config.name)} ${externalLinkIcon}</a>
+      <a href="${esc(drugUrl)}" target="_blank" rel="nofollow noopener">View on ${esc(config.name)} ${externalLinkIcon}</a>
     </div>
     ${poweredByHTML(config)}
   `;
@@ -1045,7 +1045,7 @@ function renderDrugCard(data, config) {
     </div>
     ${mechanismExcerpt ? `<div style="padding:10px 18px;border-bottom:1px solid var(--border);"><div class="healthfyi-section-label">Mechanism of Action</div><div style="font-size:11px;color:var(--muted);line-height:1.5;">${esc(mechanismExcerpt)}</div></div>` : ""}
     <div class="healthfyi-view-link">
-      <a href="${esc(drugUrl)}" target="_blank" rel="noopener">View on ${esc(config.name)} ${externalLinkIcon}</a>
+      <a href="${esc(drugUrl)}" target="_blank" rel="nofollow noopener">View on ${esc(config.name)} ${externalLinkIcon}</a>
     </div>
     ${poweredByHTML(config)}
   `;
@@ -1142,7 +1142,7 @@ function renderNutriCard(foodData, nutriData, config) {
     ${description ? `<div class="healthfyi-desc">${esc(description.length > 200 ? description.slice(0, 200) + "..." : description)}</div>` : ""}
     ${nutritionRows}
     <div class="healthfyi-view-link">
-      <a href="${esc(foodUrl)}" target="_blank" rel="noopener">View on ${esc(config.name)} ${externalLinkIcon}</a>
+      <a href="${esc(foodUrl)}" target="_blank" rel="nofollow noopener">View on ${esc(config.name)} ${externalLinkIcon}</a>
     </div>
     ${poweredByHTML(config)}
   `;
@@ -1209,7 +1209,7 @@ function initEntityWidget(el, config) {
           html = `
               <div style="padding:16px;font-size:1rem;font-weight:600;margin-bottom:8px;">${escapeHTML(name)}</div>
               <div class="healthfyi-view-link">
-                <a href="${escapeHTML(entityUrl)}" target="_blank" rel="noopener">
+                <a href="${escapeHTML(entityUrl)}" target="_blank" rel="nofollow noopener">
                   View on ${escapeHTML(config.name)} ${externalLinkIcon}
                 </a>
               </div>
@@ -1247,7 +1247,7 @@ function initCompareWidget(el, config) {
         <div style="font-size:0.9rem;color:#64748b;margin-bottom:8px;">
           Comparison not available via API.
         </div>
-        <a class="healthfyi-view-link" href="${escapeHTML2(siteUrl)}" target="_blank" rel="noopener"
+        <a class="healthfyi-view-link" href="${escapeHTML2(siteUrl)}" target="_blank" rel="nofollow noopener"
            style="color:${config.accent}">
           View on ${escapeHTML2(config.name)} ${externalLinkIcon}
         </a>
@@ -1260,7 +1260,7 @@ function initCompareWidget(el, config) {
     container.innerHTML = `
       <div class="healthfyi-error">
         <p>Missing data-slug attribute.</p>
-        <a href="https://${config.domain}" target="_blank" rel="noopener">Visit ${escapeHTML2(config.name)}</a>
+        <a href="https://${config.domain}" target="_blank" rel="nofollow noopener">Visit ${escapeHTML2(config.name)}</a>
       </div>
     `;
     return;
@@ -1293,11 +1293,11 @@ function initCompareWidget(el, config) {
                 <tr>
                   <th style="text-align:left;padding:6px 8px;border-bottom:2px solid ${config.accent};color:#64748b;font-weight:600;width:35%;">Property</th>
                   <th style="text-align:left;padding:6px 8px;border-bottom:2px solid ${config.accent};font-weight:600;width:32.5%;">
-                    <a href="${escapeHTML2(urlA)}" target="_blank" rel="noopener"
+                    <a href="${escapeHTML2(urlA)}" target="_blank" rel="nofollow noopener"
                        style="color:${config.accent};text-decoration:none;">${escapeHTML2(nameA)} \u2197</a>
                   </th>
                   <th style="text-align:left;padding:6px 8px;border-bottom:2px solid ${config.accent};font-weight:600;width:32.5%;">
-                    <a href="${escapeHTML2(urlB)}" target="_blank" rel="noopener"
+                    <a href="${escapeHTML2(urlB)}" target="_blank" rel="nofollow noopener"
                        style="color:${config.accent};text-decoration:none;">${escapeHTML2(nameB)} \u2197</a>
                   </th>
                 </tr>
@@ -1323,7 +1323,7 @@ function initCompareWidget(el, config) {
                </div>` : ""}
 
           <div style="margin-top:10px;">
-            <a class="healthfyi-view-link" href="${escapeHTML2(compareUrl)}" target="_blank" rel="noopener"
+            <a class="healthfyi-view-link" href="${escapeHTML2(compareUrl)}" target="_blank" rel="nofollow noopener"
                style="color:${config.accent}">
               Full comparison on ${escapeHTML2(config.name)} ${externalLinkIcon}
             </a>
@@ -1338,7 +1338,7 @@ function initCompareWidget(el, config) {
           <div style="font-size:0.9rem;color:#64748b;margin-bottom:8px;">
             Comparison not available via API. View on ${escapeHTML2(config.name)}.
           </div>
-          <a class="healthfyi-view-link" href="${escapeHTML2(siteUrl)}" target="_blank" rel="noopener"
+          <a class="healthfyi-view-link" href="${escapeHTML2(siteUrl)}" target="_blank" rel="nofollow noopener"
              style="color:${config.accent}">
             Visit ${escapeHTML2(config.name)} ${externalLinkIcon}
           </a>
@@ -1552,7 +1552,7 @@ function initSearchWidget(el, config) {
           class="healthfyi-search-result-item"
           href="${escapeHTML3(href)}"
           target="_blank"
-          rel="noopener"
+          rel="nofollow noopener"
           role="option"
           tabindex="-1"
           style="display:block;padding:8px 14px;text-decoration:none;color:inherit;border-bottom:1px solid #f1f5f9;transition:background 0.1s;"
